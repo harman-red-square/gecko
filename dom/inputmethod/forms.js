@@ -198,6 +198,7 @@ let FormAssistant = {
     addEventListener("beforeunload", this, true, false);
     addEventListener("input", this, true, false);
     addEventListener("keydown", this, true, false);
+    addEventListener("keypress", this, true, false);
     addEventListener("keyup", this, true, false);
     addMessageListener("Forms:Select:Choice", this);
     addMessageListener("Forms:Input:Value", this);
@@ -439,6 +440,23 @@ let FormAssistant = {
         }
 
         CompositionManager.endComposition('');
+        break;
+
+      case "keypress":
+        let element = this.focusedElement;
+        if (!element || !(isPlainTextField(element) || isContentEditable(element))){
+            // we don't want to mess with anything which does not support a text in it - let's quit before we get any side effects
+            break;
+        }
+
+        let key = String.fromCharCode(evt.charCode);
+        if (key >= '0' && key <= '9'){
+            sendAsyncMessage("Forms:NumpadKeyPress", {
+                "key": key
+            });
+            evt.stopPropagation();
+            evt.preventDefault();
+        }
         break;
 
       case "keyup":

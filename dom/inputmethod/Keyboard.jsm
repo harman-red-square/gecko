@@ -136,6 +136,7 @@ this.Keyboard = {
     mm.addMessageListener('Forms:ReplaceSurroundingText:Result:Error', this);
     mm.addMessageListener('Forms:SendKey:Result:OK', this);
     mm.addMessageListener('Forms:SendKey:Result:Error', this);
+    mm.addMessageListener('Forms:NumpadKeyPress', this);
     mm.addMessageListener('Forms:SequenceError', this);
     mm.addMessageListener('Forms:GetContext:Result:OK', this);
     mm.addMessageListener('Forms:SetComposition:Result:OK', this);
@@ -197,6 +198,7 @@ this.Keyboard = {
       case 'Forms:ReplaceSurroundingText:Result:OK':
       case 'Forms:SendKey:Result:OK':
       case 'Forms:SendKey:Result:Error':
+      case 'Forms:NumpadKeyPress':
       case 'Forms:SequenceError':
       case 'Forms:GetContext:Result:OK':
       case 'Forms:SetComposition:Result:OK':

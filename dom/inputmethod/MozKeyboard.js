@@ -196,6 +196,7 @@ MozInputMethod.prototype = {
 
     cpmm.addWeakMessageListener('Keyboard:FocusChange', this);
     cpmm.addWeakMessageListener('Keyboard:SelectionChange', this);
+    cpmm.addWeakMessageListener('Keyboard:NumpadKeyPress', this);
     cpmm.addWeakMessageListener('Keyboard:GetContext:Result:OK', this);
     cpmm.addWeakMessageListener('Keyboard:LayoutsChange', this);
     cpmm.addWeakMessageListener('InputRegistry:Result:OK', this);
@@ -212,6 +213,7 @@ MozInputMethod.prototype = {
 
     cpmm.removeWeakMessageListener('Keyboard:FocusChange', this);
     cpmm.removeWeakMessageListener('Keyboard:SelectionChange', this);
+    cpmm.removeWeakMessageListener('Keyboard:NumpadKeyPress', this);
     cpmm.removeWeakMessageListener('Keyboard:GetContext:Result:OK', this);
     cpmm.removeWeakMessageListener('Keyboard:LayoutsChange', this);
     cpmm.removeWeakMessageListener('InputRegistry:Result:OK', this);
@@ -243,6 +245,9 @@ MozInputMethod.prototype = {
         if (this.inputcontext) {
           this._inputcontext.updateSelectionContext(data, false);
         }
+        break;
+      case 'Keyboard:NumpadKeyPress':
+        this.sendNumpadKey(data);
         break;
       case 'Keyboard:GetContext:Result:OK':
         this.setInputContext(data);
@@ -314,6 +319,22 @@ MozInputMethod.prototype = {
     this.__DOM_IMPL__.dispatchEvent(event);
   },
 
+  set onnumpadkeypress(handler) {
+    this.__DOM_IMPL__.setEventHandler("onnumpadkeypress", handler);
+  },
+
+  get onnumpadkeypress() {
+    return this.__DOM_IMPL__.getEventHandler("onnumpadkeypress");
+  },
+  
+  sendNumpadKey: function mozSendNumpadKey(data) {
+    let event = new this._window.CustomEvent("numpadkeypress", 
+        Cu.cloneInto({ detail: {key: data.key} }, this._window)
+    );
+    this.__DOM_IMPL__.dispatchEvent(event);
+  },
+
+  
   setActive: function mozInputMethodSetActive(isActive) {
     if (WindowMap.isActive(this._window) === isActive) {
       return;
